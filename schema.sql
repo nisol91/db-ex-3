@@ -21,6 +21,57 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
+--QUERY ESERCIZIO
+
+--SELECT
+--1
+SELECT * FROM `ospiti` WHERE 1
+AND `document_type` = 'CI';
+--2
+SELECT * FROM `ospiti` WHERE 1
+AND `date_of_birth` > '1988-01-01';
+--3
+SELECT * FROM `ospiti` WHERE 1
+AND `date_of_birth` < '1999-02-05';
+--4
+SELECT * FROM `ospiti` WHERE 1
+AND `name` LIKE 'D%';
+--5
+SELECT COUNT(id) FROM `pagamenti` WHERE 1
+AND `status` = 'accepted';
+--6
+SELECT MAX(price) FROM `pagamenti`;
+--7
+SELECT * FROM `ospiti` WHERE 1
+AND `document_type` = 'Driver License'
+AND `date_of_birth` >= '1975-01-01'
+AND `date_of_birth` <= '1975-12-31';
+--8
+SELECT * FROM `paganti` WHERE 1
+AND `ospite_id` IS NOT NULL;
+--9
+SELECT SUM(beds) FROM `stanze`;
+--10 ??
+
+--GROUP BY
+--1
+SELECT COUNT(id) FROM `ospiti`
+GROUP BY YEAR(date_of_birth);
+--2
+SELECT SUM(price) FROM `pagamenti`
+GROUP BY `status`;
+--3
+SELECT COUNT(id) FROM `prenotazioni`
+GROUP BY `stanza_id`;
+--4
+SELECT COUNT(id) FROM `prenotazioni`
+GROUP BY HOUR(updated_at);
+--5 ??
+
+
+
+
+--
 
 --
 -- Table structure for table `configurazioni`
