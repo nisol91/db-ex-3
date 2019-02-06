@@ -25,53 +25,114 @@ SET time_zone = "+00:00";
 
 --SELECT
 --1
-SELECT * FROM `ospiti` WHERE 1
+SELECT *
+FROM `ospiti`
+WHERE 1
 AND `document_type` = 'CI';
 --2
-SELECT * FROM `ospiti` WHERE 1
+SELECT *
+FROM `ospiti`
+WHERE 1
 AND `date_of_birth` > '1988-01-01';
 --3
-SELECT * FROM `ospiti` WHERE 1
+SELECT *
+FROM `ospiti`
+WHERE 1
 AND `date_of_birth` < '1999-02-05';
 --4
-SELECT * FROM `ospiti` WHERE 1
+SELECT *
+FROM `ospiti`
+WHERE 1
 AND `name` LIKE 'D%';
 --5
-SELECT COUNT(id) FROM `pagamenti` WHERE 1
+SELECT COUNT(id)
+FROM `pagamenti`
+WHERE 1
 AND `status` = 'accepted';
 --6
-SELECT MAX(price) FROM `pagamenti`;
+SELECT MAX(price)
+FROM `pagamenti`;
 --7
-SELECT * FROM `ospiti` WHERE 1
+SELECT *
+FROM `ospiti` AS 'Ospiti con licenza'
+WHERE 1
 AND `document_type` = 'Driver License'
 AND `date_of_birth` >= '1975-01-01'
 AND `date_of_birth` <= '1975-12-31';
 --8
-SELECT * FROM `paganti` WHERE 1
+SELECT *
+FROM `paganti`
+WHERE 1
 AND `ospite_id` IS NOT NULL;
 --9
-SELECT SUM(beds) FROM `stanze`;
---10 ??
+SELECT SUM(beds)
+FROM `stanze`;
 
 --GROUP BY
 --1
-SELECT COUNT(id) FROM `ospiti`
+SELECT COUNT(id), YEAR(date_of_birth)
+FROM `ospiti`
 GROUP BY YEAR(date_of_birth);
 --2
-SELECT SUM(price) FROM `pagamenti`
+SELECT SUM(price), status
+FROM `pagamenti`
 GROUP BY `status`;
 --3
-SELECT COUNT(id) FROM `prenotazioni`
+SELECT COUNT(id), stanza_id
+FROM `prenotazioni`
 GROUP BY `stanza_id`;
 --4
-SELECT COUNT(id) FROM `prenotazioni`
+SELECT COUNT(id), HOUR(updated_at)
+FROM `prenotazioni`
 GROUP BY HOUR(updated_at);
---5 ??
+--5
+SELECT COUNT(id), ospite_id
+FROM `prenotazioni_has_ospiti`
+GROUP BY `ospite_id`
+ORDER BY COUNT(ospite_id)DESC
+LIMIT 1;-- cosi' mi prende solo il primo
+
+--JOIN
+--1
+
+--2 + bonus, simile a quello fatto in classe
+SELECT prenotazioni_has_ospiti.prenotazione_id, prenotazioni_has_ospiti.ospite_id, ospiti.name, ospiti.lastname, ospiti.id, stanze.room_number, stanze.floor, stanze.beds, pagamenti.price
+FROM prenotazioni_has_ospiti
+INNER JOIN ospiti
+ON prenotazioni_has_ospiti.ospite_id = ospiti.id
+INNER JOIN prenotazioni
+ON prenotazioni.id = prenotazioni_has_ospiti.prenotazione_id
+INNER JOIN stanze
+ON stanze.id = prenotazioni_has_ospiti.prenotazione_id
+INNER JOIN pagamenti
+ON pagamenti.id = prenotazioni_has_ospiti.prenotazione_id;
+--3
+SELECT prenotazioni_has_ospiti.prenotazione_id, prenotazioni_has_ospiti.ospite_id, ospiti.name, ospiti.lastname, ospiti.id, pagamenti.price, prenotazioni.created_at
+FROM prenotazioni_has_ospiti
+INNER JOIN ospiti
+ON prenotazioni_has_ospiti.ospite_id = ospiti.id
+INNER JOIN prenotazioni
+ON prenotazioni.id = prenotazioni_has_ospiti.prenotazione_id
+INNER JOIN pagamenti
+ON pagamenti.id = prenotazioni_has_ospiti.prenotazione_id
+WHERE MONTH(prenotazioni.created_at) = 5;
+--4
+
+--5
+SELECT *
+FROM `pagamenti`
+INNER JOIN paganti
+ON paganti.id = pagamenti.pagante_id
+INNER JOIN prenotazioni
+ON prenotazioni.id = pagamenti.prenotazione_id
+WHERE prenotazioni.id = 7;
+--6
 
 
 
 
---
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `configurazioni`
